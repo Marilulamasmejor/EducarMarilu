@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuentra el Número</title>
+    <!-- Librería para el efecto Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body { font-family: 'Arial', sans-serif; background-color: #e8f5e9; text-align: center; padding: 20px; }
+        .pantalla-medio { margin: 30px auto; width: 220px; height: 220px; background: white; border: 5px dashed #4caf50; border-radius: 20px; display: flex; align-items: center; justify-content: center; }
+        .pantalla-medio img { width: 180px; height: 180px; object-fit: contain; }
+        .opciones-inferior { display: flex; justify-content: center; gap: 15px; margin-top: 40px; }
+        .btn-numero { background-color: #ffffff; border: 3px solid #4caf50; font-size: 2.5rem; font-weight: bold; width: 70px; height: 70px; border-radius: 50%; cursor: pointer; transition: 0.2s; }
+        .btn-numero:hover { background-color: #c8e6c9; }
+        .incorrecto { background-color: #ffcdd2 !important; border-color: #d32f2f !important; color: #d32f2f; }
+        .btn-siguiente { display: none; background-color: #ff9800; color: white; border: none; padding: 15px 40px; font-size: 1.5rem; border-radius: 15px; cursor: pointer; margin-top: 30px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+    <h1>¿Qué número es?</h1>
+
+    <!-- Parte del medio: Imagen del número en Braille -->
+    <div class="pantalla-medio">
+        <!-- CAMBIAR IMAGEN SEGÚN EL EJERCICIO (Ej: braille1.png, braille3.png...) -->
+        <img src="../practica/braille2.png" alt="Número en Braille">
+    </div>
+
+    <!-- Parte inferior: Botones del 1 al 5 -->
+    <div class="opciones-inferior">
+        <button class="btn-numero" onclick="verificarRespuesta(1, this)">1</button>
+        <button class="btn-numero" onclick="verificarRespuesta(2, this)">2</button>
+        <button class="btn-numero" onclick="verificarRespuesta(3, this)">3</button>
+        <button class="btn-numero" onclick="verificarRespuesta(4, this)">4</button>
+        <button class="btn-numero" onclick="verificarRespuesta(5, this)">5</button>
+    </div>
+
+    <!-- Botón oculto que aparece al acertar -->
+    <!-- EN EL ÚLTIMO EJERCICIO CAMBIAR EL ENLACE A: "../pagina_final.html" -->
+    <button id="btnSiguiente" class="btn-siguiente" onclick="window.location.href='ejercicio_5.html'">Siguiente</button>
+
+    <script>
+        // CONFIGURACIÓN: Define cuál es la respuesta correcta para este archivo (1 al 5)
+        const RESPUESTA_CORRECTA = 2; 
+
+        function hablar(texto) {
+            window.speechSynthesis.cancel(); // Detiene cualquier voz activa antes de hablar
+            let mensaje = new SpeechSynthesisUtterance(texto);
+            mensaje.lang = 'es-ES';
+            window.speechSynthesis.speak(mensaje);
+        }
+
+        function verificarRespuesta(numeroSeleccionado, botonPresionado) {
+            if (numeroSeleccionado === RESPUESTA_CORRECTA) {
+                hablar("Correcto, puedes pasar al siguiente");
+                
+                // Efecto de Confeti
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+
+                // Mostrar botón siguiente y desactivar los números
+                document.getElementById("btnSiguiente").style.display = "inline-block";
+                let botones = document.querySelectorAll('.btn-numero');
+                botones.forEach(btn => btn.disabled = true);
+            } else {
+                hablar("Ups, vuelve a intentarlo");
+                botonPresionado.classList.add("incorrecto");
+            }
+        }
+    </script>
+</body>
+</html>

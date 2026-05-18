@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Felicidades!</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body { font-family: 'Arial', sans-serif; background-color: #f3e5f5; text-align: center; padding: 80px 20px; }
+        h1 { color: #4a148c; font-size: 3.5rem; margin-bottom: 40px; }
+        .btn-volver { background-color: #7b1fa2; color: white; border: none; padding: 20px 50px; font-size: 1.8rem; border-radius: 20px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.15); transition: 0.3s; }
+        .btn-volver:hover { background-color: #4a148c; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+    <h1>¡Felicidades! Has aprendido los números en braille</h1>
+    
+    <!-- Cambia 'index.html' por el nombre de tu archivo de login si es diferente -->
+    <button class="btn-volver" onclick="window.location.href='index.html'">Volver</button>
+
+    <script>
+        function hablar(texto) {
+            let mensaje = new SpeechSynthesisUtterance(texto);
+            mensaje.lang = 'es-ES';
+            window.speechSynthesis.speak(mensaje);
+        }
+
+        window.onload = function() {
+            hablar("¡Felicidades! Has aprendido los números en braille");
+            
+            // Lluvia constante de confeti al terminar
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 } });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 } });
+                if (Date.now() < end) { requestAnimationFrame(frame); }
+            }());
+        };
+    </script>
+</body>
+</html>
