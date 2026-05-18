@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Comenzar Práctica</title>
+
+<style>
+    body{
+        font-family: Arial, sans-serif;
+        background-color:#e0f7fa;
+        text-align:center;
+        padding:50px;
+    }
+
+    h1{
+        color:#00796b;
+        font-size:3rem;
+    }
+
+    button{
+        background-color:#00befa;
+        color:white;
+        border:none;
+        padding:20px 40px;
+        font-size:1.8rem;
+        border-radius:15px;
+        cursor:pointer;
+    }
+
+    button:hover{
+        background-color:#0097a7;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Aprendamos los números del 1 al 5 en braille</h1>
+
+<br><br>
+
+<button onclick="siguientePagina()">
+    Comenzar
+</button>
+
+<script>
+
+function hablar(texto, alTerminar){
+
+    let mensaje = new SpeechSynthesisUtterance(texto);
+
+    mensaje.lang = "es-ES";
+
+    if(alTerminar){
+        mensaje.onend = alTerminar;
+    }
+
+    speechSynthesis.speak(mensaje);
+}
+
+window.onload = function(){
+
+    hablar(
+        "Aprendamos los números del 1 al 5 en braille",
+        function(){
+            hablar("Presiona el botón para comenzar a aprender");
+        }
+    );
+};
+
+function siguientePagina(){
+    window.location.href = "practica1.html";
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Práctica Número 1</title>
+
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #fff9c4;
+            text-align: center;
+            padding: 30px;
+        }
+
+        h1{
+            color:#333;
+        }
+
+        .contenedor-imagenes{
+            display:flex;
+            justify-content:center;
+            gap:50px;
+            margin:40px 0;
+        }
+
+        img{
+            width:200px;
+            height:200px;
+            object-fit:contain;
+            border:4px solid #fbc02d;
+            border-radius:20px;
+            background:white;
+            padding:10px;
+        }
+
+        button{
+            background-color:#4caf50;
+            color:white;
+            border:none;
+            padding:15px 40px;
+            font-size:1.5rem;
+            border-radius:15px;
+            cursor:pointer;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>Número 1</h1>
+
+    <div class="contenedor-imagenes">
+
+        <!-- PRUEBA con imágenes online -->
+        <img src="img/numero1.png" alt="Número 1">
+
+        <img src="img/braille1.png" alt="Braille 1">
+
+    </div>
+
+    <button onclick="accionSiguiente()">
+        Siguiente
+    </button>
+
+    <script>
+
+        function hablar(texto, alTerminar){
+
+            let mensaje = new SpeechSynthesisUtterance(texto);
+
+            mensaje.lang = "es-ES";
+
+            if(alTerminar){
+                mensaje.onend = alTerminar;
+            }
+
+            speechSynthesis.speak(mensaje);
+        }
+
+        window.onload = function(){
+
+            hablar("Uno");
+        };
+
+        function accionSiguiente(){
+
+            hablar("Siguiente", function(){
+
+                window.location.href = "practica2.html";
+
+                // window.location.href = "practica2.html";
+
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>
