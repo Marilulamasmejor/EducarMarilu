@@ -1,51 +1,105 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Práctica - Número 5</title>
+
+    <title>Práctica Número 4</title>
+
     <style>
-        body { font-family: 'Arial', sans-serif; background-color: #fff9c4; text-align: center; padding: 30px; }
-        .contenedor-imagenes { display: flex; justify-content: center; gap: 50px; margin: 40px 0; }
-        img { width: 200px; height: 200px; object-fit: contain; border: 4px solid #fbc02d; border-radius: 20px; background: white; padding: 10px; }
-        button { background-color: #4caf50; color: white; border: none; padding: 15px 40px; font-size: 1.5rem; border-radius: 15px; cursor: pointer; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
-        button:hover { background-color: #388e3c; }
+
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #fff9c4;
+            text-align: center;
+            padding: 30px;
+        }
+
+        h1{
+            color:#333;
+        }
+
+        .contenedor-imagenes{
+            display:flex;
+            justify-content:center;
+            gap:50px;
+            margin:40px 0;
+        }
+
+        img{
+            width:200px;
+            height:200px;
+            object-fit:contain;
+            border:4px solid #fbc02d;
+            border-radius:20px;
+            background:white;
+            padding:10px;
+        }
+
+        button{
+            background-color:#4caf50;
+            color:white;
+            border:none;
+            padding:15px 40px;
+            font-size:1.5rem;
+            border-radius:15px;
+            cursor:pointer;
+        }
+
     </style>
+
 </head>
+
 <body>
 
-    <!-- Cambiar el título según el número -->
-    <h1>Número 4</h1> 
+    <h1>Número 4</h1>
 
     <div class="contenedor-imagenes">
-        <!-- Reemplaza con tus imágenes reales -->
-        <img src="numero4.png" alt="Número 4">
-        <img src="braille4.png" alt="Número 4 en Braille">
+
+        <!-- PRUEBA con imágenes online -->
+        <img src="img/numero4.png" alt="Número 2">
+        
+        <img src="img/braille4.png" alt="Braille 2">
+
     </div>
 
-    <!-- En la práctica 5 este botón debe decir "Iniciar" -->
-    <button onclick="accionSiguiente()">Siguiente</button>
+    <button onclick="accionSiguiente()">
+        Siguiente
+    </button>
 
     <script>
-        function hablar(texto, alTerminar) {
+
+        function hablar(texto, alTerminar){
+
             let mensaje = new SpeechSynthesisUtterance(texto);
-            mensaje.lang = 'es-ES';
-            if (alTerminar) mensaje.onend = alTerminar;
-            window.speechSynthesis.speak(mensaje);
+
+            mensaje.lang = "es-ES";
+
+            if(alTerminar){
+                mensaje.onend = alTerminar;
+            }
+
+            speechSynthesis.speak(mensaje);
         }
 
-        window.onload = function() {
-            // Cambiar por el número correspondiente en cada página ("Dos", "Tres", etc.)
-            hablar("Cuatro"); 
+        window.onload = function(){
+
+            hablar("Cuatro");
         };
 
-        function accionSiguiente() {
-            hablar("Siguiente", function() {
-                // Cambiar hacia dónde va: practica_2.html, practica_3.html... 
-                // En la práctica 5 será "../ejercicios/Ejercicio_1.html"
-                window.location.href = "practica_5.html";  
+        function accionSiguiente(){
+
+            hablar("Siguiente", function(){
+
+                window.location.href = "practica5.html";
+
+
             });
         }
+
     </script>
+
 </body>
+
 </html>
