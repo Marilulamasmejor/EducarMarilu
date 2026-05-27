@@ -119,12 +119,12 @@ onclick="verificar()">
 OK
 </button>
 
-<button id="siguienteBtn"
-onclick="irSiguiente()"
+<button id="finalizarBtn"
+onclick="finalizarJuego()"
 style="
-background:#5c8df6;
+background:#e91e63;
 display:none;">
-Siguiente
+Finalizar
 </button>
 
 <button id="borrarBtn"
@@ -211,20 +211,22 @@ function crearCasillas(){
 
     box.innerHTML = "";
 
-    for(let i=1;i<=6;i++){
+    const ordenBraille = [1,4,2,5,3,6];
+
+    for(let n of ordenBraille){
 
         const slot =
         document.createElement("div");
 
         slot.className = "slot";
 
-        slot.id = "slot"+i;
+        slot.id = "slot"+n;
 
         slot.ondragover =
         e=>e.preventDefault();
 
         slot.ondrop =
-        e=>soltar(e,i);
+        e=>soltar(e,n);
 
         box.appendChild(slot);
     }
@@ -341,7 +343,7 @@ function verificar(){
         /* mostrar botón siguiente */
 
         document.getElementById(
-        "siguienteBtn").style.display =
+        "finalizarBtn").style.display =
         "inline-block";
 
     }else{
@@ -360,12 +362,12 @@ function verificar(){
 }
 
 
-function irSiguiente(){
+function finalizarJuego(){
 
-    hablar("Siguiente");
+    hablar("Finalizar");
 
     window.location.href =
-    siguiente;
+    "final.html";
 }
 
 /* =========================
@@ -392,7 +394,7 @@ function borrarTodo(){
     /* ocultar siguiente */
 
     document.getElementById(
-    "siguienteBtn").style.display =
+    "finalizarBtn").style.display =
     "none";
 
     crearCasillas();

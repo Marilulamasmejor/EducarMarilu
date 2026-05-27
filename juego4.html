@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Juego Braille</title>
+
+<style>
+
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:Arial;
+    background:linear-gradient(to bottom,#9ed8ff,#ffffff);
+    text-align:center;
+}
+
+/* ROBOT */
+
+#robot{
+    font-size:140px;
+    margin-top:20px;
+}
+
+/* BRAILLE */
+
+#brailleBox{
+    width:220px;
+    margin:20px auto;
+    display:grid;
+    grid-template-columns:repeat(2,80px);
+    gap:20px;
+    justify-content:center;
+}
+
+.slot{
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    border:4px dashed #555;
+    background:white;
+}
+
+/* PUNTOS */
+
+#pointsContainer{
+    margin-top:40px;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.point{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:#222;
+    cursor:grab;
+}
+
+/* BOTONES */
+
+#buttons{
+    margin-top:40px;
+}
+
+button{
+    padding:18px 35px;
+    margin:10px;
+    border:none;
+    border-radius:20px;
+    font-size:26px;
+    cursor:pointer;
+    color:white;
+}
+
+#okBtn{
+    background:#27c93f;
+}
+
+#borrarBtn{
+    background:#ff9800;
+}
+
+#audioBtn{
+    background:#5c8df6;
+}
+
+/* MENSAJE */
+
+#mensaje{
+    font-size:32px;
+    min-height:50px;
+    margin-top:20px;
+}
+
+</style>
+</head>
+
+<body onload="inicio()">
+
+<div id="robot">🤖</div>
+
+<h1 id="titulo"></h1>
+
+<div id="mensaje"></div>
+
+<!-- CASILLAS -->
+<div id="brailleBox"></div>
+
+<!-- PUNTOS -->
+<div id="pointsContainer"></div>
+
+<!-- BOTONES -->
+<div id="buttons">
+
+<button id="okBtn"
+onclick="verificar()">
+OK
+</button>
+
+<button id="siguienteBtn"
+onclick="irSiguiente()"
+style="
+background:#5c8df6;
+display:none;">
+Siguiente
+</button>
+
+<button id="borrarBtn"
+onclick="borrarTodo()">
+Borrar
+</button>
+
+<button id="audioBtn"
+onclick="repetirAudio()">
+🔊 Escuchar
+</button>
+
+</div>
+
+<script>
+
+/* =========================
+CONFIGURACIÓN
+CAMBIAR SOLO ESTO
+========================= */
+
+const numeroActual = 4;
+
+const respuesta = [1,4,5];
+
+const siguiente = "juego5.html";
+
+/* ========================= */
+
+let colocados = [];
+
+/* =========================
+VOZ
+========================= */
+
+function hablar(texto){
+
+    speechSynthesis.cancel();
+
+    const voz =
+    new SpeechSynthesisUtterance(texto);
+
+    voz.lang = "es-ES";
+
+    voz.rate = 0.9;
+
+    speechSynthesis.speak(voz);
+}
+
+function repetirAudio(){
+
+    hablar(
+    "Forma el número " +
+    numeroActual);
+}
+
+/* =========================
+INICIO
+========================= */
+
+function inicio(){
+
+    document.getElementById(
+    "titulo").innerHTML =
+    "Forma el número " +
+    numeroActual;
+
+    repetirAudio();
+
+    crearCasillas();
+
+    crearPuntos();
+}
+
+/* =========================
+CREAR CASILLAS
+========================= */
+
+function crearCasillas(){
+
+    const box =
+    document.getElementById(
+    "brailleBox");
+
+    box.innerHTML = "";
+
+    /* orden correcto Braille */
+
+    const ordenBraille =
+    [1,4,2,5,3,6];
+
+    for(let n of ordenBraille){
+
+        const slot =
+        document.createElement("div");
+
+        slot.className = "slot";
+
+        slot.id = "slot"+n;
+
+        slot.ondragover =
+        e=>e.preventDefault();
+
+        slot.ondrop =
+        e=>soltar(e,n);
+
+        box.appendChild(slot);
+    }
+}
+
+/* =========================
+CREAR PUNTOS
+========================= */
+
+function crearPuntos(){
+
+    const container =
+    document.getElementById(
+    "pointsContainer");
+
+    container.innerHTML = "";
+
+    colocados = [];
+
+    for(let i=1;i<=6;i++){
+
+        const point =
+        document.createElement("div");
+
+        point.className = "point";
+
+        point.id = "point"+i;
+
+        point.draggable = true;
+
+        point.ondragstart = (e)=>{
+
+            e.dataTransfer
+            .setData("text",i);
+        };
+
+        container.appendChild(point);
+    }
+}
+
+/* =========================
+SOLTAR
+========================= */
+
+function soltar(e,slot){
+
+    e.preventDefault();
+
+    const pointId =
+    e.dataTransfer.getData("text");
+
+    const point =
+    document.getElementById(
+    "point"+pointId);
+
+    const slotActual =
+    document.getElementById(
+    "slot"+slot);
+
+    /* evita más de un punto */
+
+    if(slotActual.children.length > 0){
+
+        return;
+    }
+
+    slotActual.appendChild(point);
+
+    /* guardar slot */
+
+    if(!colocados.includes(slot)){
+
+        colocados.push(slot);
+    }
+}
+
+/* =========================
+VERIFICAR
+========================= */
+
+function verificar(){
+
+    let usados =
+    [...colocados]
+    .sort((a,b)=>a-b);
+
+    let correcta =
+    [...respuesta]
+    .sort((a,b)=>a-b);
+
+    let correcto =
+
+    JSON.stringify(usados) ===
+    JSON.stringify(correcta);
+
+    if(correcto){
+
+        document.getElementById(
+        "robot").innerHTML =
+        "🤖😄";
+
+        document.getElementById(
+        "mensaje").innerHTML =
+        "⭐ Correcto ⭐";
+
+        hablar("Correcto");
+
+        /* ocultar botón OK */
+
+        document.getElementById(
+        "okBtn").style.display =
+        "none";
+
+        /* mostrar botón siguiente */
+
+        document.getElementById(
+        "siguienteBtn").style.display =
+        "inline-block";
+
+    }else{
+
+        document.getElementById(
+        "robot").innerHTML =
+        "🤖😢";
+
+        document.getElementById(
+        "mensaje").innerHTML =
+        "❌ Intenta nuevamente";
+
+        hablar(
+        "Ese no es el número correcto");
+    }
+}
+
+
+function irSiguiente(){
+
+    hablar("Siguiente");
+
+    window.location.href =
+    siguiente;
+}
+
+/* =========================
+BORRAR
+========================= */
+
+function borrarTodo(){
+
+    hablar("Borrar");
+
+    document.getElementById(
+    "mensaje").innerHTML = "";
+
+    document.getElementById(
+    "robot").innerHTML =
+    "🤖";
+
+    /* mostrar OK */
+
+    document.getElementById(
+    "okBtn").style.display =
+    "inline-block";
+
+    /* ocultar siguiente */
+
+    document.getElementById(
+    "siguienteBtn").style.display =
+    "none";
+
+    crearCasillas();
+
+    crearPuntos();
+}
+
+</script>
+
+</body>
+</html>

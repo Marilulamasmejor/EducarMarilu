@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Final</title>
+
+<style>
+
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:Arial;
+    background:linear-gradient(to bottom,#9ed8ff,#ffffff);
+    text-align:center;
+}
+
+/* MENSAJE */
+
+#mensajeFinal{
+
+    margin-top:100px;
+
+    font-size:55px;
+
+    color:#ff4081;
+
+    font-weight:bold;
+
+    text-shadow:
+    3px 3px 8px rgba(0,0,0,0.3);
+}
+
+/* ROBOT */
+
+#robot{
+
+    font-size:180px;
+
+    margin-top:40px;
+
+    animation:saltar 1s infinite;
+}
+
+@keyframes saltar{
+
+    0%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-25px);
+    }
+
+    100%{
+        transform:translateY(0);
+    }
+}
+
+/* CONFETI */
+
+.confeti{
+
+    position:absolute;
+
+    width:14px;
+
+    height:14px;
+
+    top:-20px;
+
+    animation:caer linear forwards;
+}
+
+@keyframes caer{
+
+    to{
+
+        transform:
+        translateY(110vh)
+        rotate(720deg);
+
+        opacity:0;
+    }
+}
+
+</style>
+</head>
+
+<body onload="inicioFinal()">
+
+<div id="mensajeFinal">
+🎉 ¡Felicidades! Has respondido todo correctamente 🎉
+</div>
+
+<div id="robot">
+🤖😄
+</div>
+
+<script>
+
+/* =========================
+VOZ
+========================= */
+
+function hablar(texto){
+
+    speechSynthesis.cancel();
+
+    const voz =
+    new SpeechSynthesisUtterance(texto);
+
+    voz.lang = "es-ES";
+
+    voz.rate = 0.9;
+
+    speechSynthesis.speak(voz);
+}
+
+/* =========================
+INICIO
+========================= */
+
+function inicioFinal(){
+
+    hablar(
+    "¡Felicidades! Has respondido todo correctamente");
+
+    lanzarConfeti();
+}
+
+/* =========================
+CONFETI
+========================= */
+
+function lanzarConfeti(){
+
+    const colores = [
+
+        "#ff4081",
+        "#ffeb3b",
+        "#00e676",
+        "#40c4ff",
+        "#ff9800",
+        "#9c27b0"
+    ];
+
+    for(let i=0;i<180;i++){
+
+        const confeti =
+        document.createElement("div");
+
+        confeti.className =
+        "confeti";
+
+        confeti.style.left =
+        Math.random()*100 + "vw";
+
+        confeti.style.background =
+        colores[
+        Math.floor(
+        Math.random()*
+        colores.length)];
+
+        confeti.style.animationDuration =
+        (Math.random()*3 + 2) + "s";
+
+        confeti.style.opacity =
+        Math.random();
+
+        confeti.style.transform =
+        "rotate(" +
+        Math.random()*360 +
+        "deg)";
+
+        document.body.appendChild(
+        confeti);
+
+        setTimeout(()=>{
+
+            confeti.remove();
+
+        },5000);
+    }
+}
+
+</script>
+
+</body>
+</html>

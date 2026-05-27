@@ -28,6 +28,7 @@ body{
     margin:20px auto;
     display:grid;
     grid-template-columns:repeat(2,80px);
+    grid-template-rows:repeat(3,80px);
     gap:20px;
     justify-content:center;
 }
@@ -211,20 +212,24 @@ function crearCasillas(){
 
     box.innerHTML = "";
 
-    for(let i=1;i<=6;i++){
+    /* orden braille real */
+
+    const orden = [1,4,2,5,3,6];
+
+    for(let n of orden){
 
         const slot =
         document.createElement("div");
 
         slot.className = "slot";
 
-        slot.id = "slot"+i;
+        slot.id = "slot"+n;
 
         slot.ondragover =
         e=>e.preventDefault();
 
         slot.ondrop =
-        e=>soltar(e,i);
+        e=>soltar(e,n);
 
         box.appendChild(slot);
     }
@@ -307,9 +312,20 @@ VERIFICAR
 
 function verificar(){
 
-    let usados =
-    [...colocados]
-    .sort((a,b)=>a-b);
+    let usados = [];
+
+    for(let i=1;i<=6;i++){
+
+        const slot =
+        document.getElementById("slot"+i);
+
+        if(slot.children.length > 0){
+
+            usados.push(i);
+        }
+    }
+
+    usados.sort((a,b)=>a-b);
 
     let correcta =
     [...respuesta]
@@ -332,13 +348,9 @@ function verificar(){
 
         hablar("Correcto");
 
-        /* ocultar botón OK */
-
         document.getElementById(
         "okBtn").style.display =
         "none";
-
-        /* mostrar botón siguiente */
 
         document.getElementById(
         "siguienteBtn").style.display =
