@@ -1,0 +1,20 @@
+.boton-bienvenida {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #3b5998;
+    color: white;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 1);
+    transition: background-color 0.3s ease, transform 0.2 ease;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.boton-bienvenida:hover{
+    background-color: #4c70ba;
+    transform: scale(1.05);
+}

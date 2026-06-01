@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juegos matemáticos</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(to bottom,#7de3ff,#ffffff);
+    text-align:center;
+}
+
+h1{
+    color:#004d99;
+    margin-top:20px;
+}
+
+p{
+    font-size:20px;
+}
+
+.contenedor{
+    width:90%;
+    max-width:900px;
+    margin:auto;
+}
+
+.juego{
+    background:white;
+    margin:20px auto;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+.juego h2{
+    color:#ff4da6;
+}
+
+.boton{
+    padding:12px 25px;
+    font-size:18px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    margin:5px;
+    color:white;
+    font-weight:bold;
+}
+
+.jugar{
+    background:#00bfff;
+}
+
+.jugar:hover{
+    background:#0099cc;
+}
+
+.audio{
+    background:#ff66b3;
+}
+
+.audio:hover{
+    background:#e60073;
+}
+
+</style>
+</head>
+<body>
+
+<h1>🎮 Zona de Juegos Matemáticos</h1>
+
+<p>Elige un juego para comenzar a practicar</p>
+
+<div class="contenedor">
+
+    <div class="juego">
+        <h2>🚀 Carrera Espacial</h2>
+
+        <button class="boton jugar"
+        onclick="jugar('Carrera Espacial','carrera_espacial.html')">
+        Jugar
+        </button>
+
+        <button class="boton audio"
+        onclick="escucharJuego('espacial')">
+        🔊 Escuchar
+        </button>
+    </div>
+
+    <div class="juego">
+        <h2>🏴‍☠️ Búsqueda del Tesoro</h2>
+
+        <button class="boton jugar"
+        onclick="jugar('Búsqueda del Tesoro','tesoro.html')">
+        Jugar
+        </button>
+
+        <button class="boton audio"
+        onclick="escucharJuego('tesoro')">
+        🔊 Escuchar
+        </button>
+    </div>
+
+    <div class="juego">
+        <h2>🧟 Defensa del Castillo</h2>
+
+        <button class="boton jugar"
+        onclick="jugar('Defensa del Castillo','castillo.html')">
+        Jugar
+        </button>
+
+        <button class="boton audio"
+        onclick="escucharJuego('castillo')">
+        🔊 Escuchar
+        </button>
+    </div>
+
+    <div class="juego">
+        <h2>🏎️ Carrera Matemática</h2>
+
+        <button class="boton jugar"
+        onclick="jugar('Carrera Matemática','carrera_matematica.html')">
+        Jugar
+        </button>
+
+        <button class="boton audio"
+        onclick="escucharJuego('carrera')">
+        🔊 Escuchar
+        </button>
+    </div>
+
+    <div class="juego">
+        <h2>🤖 Robot Constructor</h2>
+
+        <button class="boton jugar"
+        onclick="jugar('Robot Constructor','robot_constructor.html')">
+        Jugar
+        </button>
+
+        <button class="boton audio"
+        onclick="escucharJuego('robot')">
+        🔊 Escuchar
+        </button>
+    </div>
+
+</div>
+
+<script>
+
+// Se ejecuta cuando carga la página
+window.onload = function(){
+
+    let bienvenida = new SpeechSynthesisUtterance(
+        "Zona de juegos matemáticos. Elige un juego para comenzar a practicar."
+    );
+
+    bienvenida.lang = "es-ES";
+    bienvenida.rate = 1;
+    bienvenida.pitch = 1;
+
+    speechSynthesis.speak(bienvenida);
+
+};
+
+
+// Lee las instrucciones de cada juego
+function escucharJuego(tipo){
+
+    speechSynthesis.cancel();
+
+    let texto = "";
+
+    switch(tipo){
+
+        case "espacial":
+            texto = "Carrera Espacial. Resuelve sumas, restas, multiplicaciones y divisiones con números de tres dígitos para que tu nave avance hasta llegar al planeta final.";
+            break;
+
+        case "tesoro":
+            texto = "Búsqueda del Tesoro. Resuelve operaciones matemáticas para avanzar por el mapa y encontrar un tesoro escondido.";
+            break;
+
+        case "castillo":
+            texto = "Defensa del Castillo. Los monstruos intentan llegar al castillo. Responde correctamente las operaciones para derrotarlos y proteger el reino.";
+            break;
+
+        case "carrera":
+            texto = "Carrera Matemática. Resuelve operaciones para que tu automóvil avance más rápido y gane la carrera.";
+            break;
+
+        case "robot":
+            texto = "Robot Constructor. Resuelve desafíos matemáticos para conseguir piezas y construir un robot completo.";
+            break;
+    }
+
+    let mensaje = new SpeechSynthesisUtterance(texto);
+
+    mensaje.lang = "es-ES";
+    mensaje.rate = 0.9;
+    mensaje.pitch = 1;
+    mensaje.volume = 1;
+
+    speechSynthesis.speak(mensaje);
+}
+
+
+
+// Dice el nombre del juego y luego abre la página
+function jugar(nombre,url){
+
+    speechSynthesis.cancel();
+
+    let mensaje = new SpeechSynthesisUtterance(nombre);
+
+    mensaje.lang = "es-ES";
+    mensaje.rate = 0.9;
+
+    speechSynthesis.speak(mensaje);
+
+    mensaje.onend = function(){
+        location.href = url;
+    };
+
+}
+
+</script>
+
+</body>
+</html>
