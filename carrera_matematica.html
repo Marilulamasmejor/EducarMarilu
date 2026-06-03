@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrera Matemática</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    text-align:center;
+    background:linear-gradient(to bottom,#87ceeb,#ffffff);
+}
+
+h1{
+    color:#004d99;
+}
+
+#panel{
+    font-size:24px;
+    font-weight:bold;
+    margin:10px;
+}
+
+#pista{
+    width:95%;
+    max-width:1100px;
+    margin:auto;
+    border:4px solid #333;
+    border-radius:15px;
+    background:#777;
+    padding:20px;
+    position:relative;
+}
+
+.carril{
+    position:relative;
+    height:80px;
+    margin:10px 0;
+    background:#555;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.meta{
+    position:absolute;
+    left:20px;
+    top:0;
+    height:100%;
+    width:10px;
+    background:white;
+}
+
+.auto{
+    position:absolute;
+    right:10px;
+    top:15px;
+    font-size:45px;
+    transition:all 0.8s;
+}
+
+#operacion{
+    font-size:38px;
+    font-weight:bold;
+    color:#003366;
+    margin-top:20px;
+}
+
+input{
+    width:180px;
+    font-size:28px;
+    text-align:center;
+    padding:10px;
+    border-radius:10px;
+}
+
+button{
+    padding:12px 25px;
+    margin:10px;
+    font-size:20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    color:white;
+}
+
+#responder{
+    background:#00bfff;
+}
+
+#menu{
+    background:#ff66b3;
+}
+
+#mensaje{
+    min-height:40px;
+    font-size:28px;
+    font-weight:bold;
+}
+
+#final{
+    display:none;
+    font-size:40px;
+    margin-top:20px;
+}
+
+.estrella{
+    position:absolute;
+    font-size:30px;
+    animation:brillo 1s linear forwards;
+}
+
+@keyframes brillo{
+
+    from{
+        opacity:1;
+        transform:scale(1);
+    }
+
+    to{
+        opacity:0;
+        transform:scale(2);
+    }
+}
+
+</style>
+</head>
+<body>
+
+<h1>🏎️ Carrera Matemática</h1>
+
+<div id="panel">
+🔥 Racha: <span id="racha">0</span>
+</div>
+
+<div id="pista">
+
+<div class="carril">
+<div class="meta"></div>
+<div class="auto" id="jugador">🚗</div>
+</div>
+
+<div class="carril">
+<div class="meta"></div>
+<div class="auto" id="rival1">🚙</div>
+</div>
+
+<div class="carril">
+<div class="meta"></div>
+<div class="auto" id="rival2">🚕</div>
+</div>
+
+<div class="carril">
+<div class="meta"></div>
+<div class="auto" id="rival3">🚓</div>
+</div>
+
+</div>
+
+<div id="operacion"></div>
+
+<input type="number" id="respuesta">
+
+<br>
+
+<button id="responder" onclick="verificar()">
+Responder
+</button>
+
+<button id="menu"
+onclick="location.href='juega.html'">
+🏠 Volver al menú
+</button>
+
+<div id="mensaje"></div>
+
+<div id="final"></div>
+
+<script>
+
+let respuestaCorrecta;
+
+let jugador=10;
+let rival1=10;
+let rival2=10;
+let rival3=10;
+
+let racha=0;
+
+const META=850;
+
+function hablar(texto){
+
+    speechSynthesis.cancel();
+
+    let voz=
+    new SpeechSynthesisUtterance(texto);
+
+    voz.lang="es-ES";
+    voz.rate=1.1;
+
+    speechSynthesis.speak(voz);
+}
+
+window.onload=function(){
+
+    let bienvenida=
+    new SpeechSynthesisUtterance(
+    "Carrera matemática. Resuelve operaciones para que tu auto llegue primero a la meta."
+    );
+
+    bienvenida.lang="es-ES";
+
+    bienvenida.onend=function(){
+
+        nuevaOperacion();
+
+    };
+
+    speechSynthesis.speak(bienvenida);
+
+};
+
+function numero3Digitos(){
+
+    return Math.floor(Math.random()*900)+100;
+}
+
+function leerOperacion(texto){
+
+    speechSynthesis.cancel();
+
+    let voz=
+    new SpeechSynthesisUtterance(texto);
+
+    voz.lang="es-ES";
+    voz.rate=1.2;
+
+    speechSynthesis.speak(voz);
+}
+
+function nuevaOperacion(){
+
+    let tipo=
+    Math.floor(Math.random()*4)+1;
+
+    let a,b;
+
+    if(tipo===1){
+
+        a=numero3Digitos();
+        b=numero3Digitos();
+
+        respuestaCorrecta=a+b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" + "+b;
+
+        leerOperacion(
+        "¿Cuánto es "+a+" más "+b+"?"
+        );
+    }
+
+    if(tipo===2){
+
+        a=numero3Digitos();
+        b=numero3Digitos();
+
+        if(b>a){
+
+            let aux=a;
+            a=b;
+            b=aux;
+        }
+
+        respuestaCorrecta=a-b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" - "+b;
+
+        leerOperacion(
+        "¿Cuánto es "+a+" menos "+b+"?"
+        );
+    }
+
+    if(tipo===3){
+
+        a=Math.floor(Math.random()*11)+2;
+        b=Math.floor(Math.random()*11)+2;
+
+        respuestaCorrecta=a*b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" × "+b;
+
+        leerOperacion(
+        "¿Cuánto es "+a+" por "+b+"?"
+        );
+    }
+
+    if(tipo===4){
+
+        b=Math.floor(Math.random()*11)+2;
+
+        respuestaCorrecta=
+        Math.floor(Math.random()*11)+2;
+
+        a=respuestaCorrecta*b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" ÷ "+b;
+
+        leerOperacion(
+        "¿Cuánto es "+a+
+        " dividido entre "+b+"?"
+        );
+    }
+
+    document.getElementById("respuesta").value="";
+}
+
+function verificar(){
+
+    let r=Number(
+    document.getElementById("respuesta").value
+    );
+
+    if(r===respuestaCorrecta){
+
+        racha++;
+
+        document.getElementById("racha").innerHTML=
+        racha;
+
+        let avance=70;
+
+        if(racha>=3){
+
+            avance=120;
+
+            document.getElementById("mensaje").innerHTML=
+            "🚀 ¡Turbo activado!";
+        }
+        else{
+
+            document.getElementById("mensaje").innerHTML=
+            "✅ ¡Correcto!";
+        }
+
+        jugador+=avance;
+
+        moverAutos();
+
+        estrellas();
+
+        hablar("Muy bien");
+
+    }else{
+
+        racha=0;
+
+        document.getElementById("racha").innerHTML=
+        racha;
+
+        document.getElementById("mensaje").innerHTML=
+        "❌ Respuesta incorrecta";
+
+        hablar("Respuesta incorrecta");
+    }
+
+    moverRivales();
+
+    verificarGanador();
+
+    nuevaOperacion();
+}
+
+function moverAutos(){
+
+    document.getElementById("jugador").style.right=
+    jugador+"px";
+
+    document.getElementById("rival1").style.right=
+    rival1+"px";
+
+    document.getElementById("rival2").style.right=
+    rival2+"px";
+
+    document.getElementById("rival3").style.right=
+    rival3+"px";
+}
+
+function moverRivales(){
+
+    rival1+=Math.random()*50+20;
+    rival2+=Math.random()*50+20;
+    rival3+=Math.random()*50+20;
+
+    moverAutos();
+}
+
+function estrellas(){
+
+    for(let i=0;i<8;i++){
+
+        let estrella=
+        document.createElement("div");
+
+        estrella.className="estrella";
+
+        estrella.innerHTML="⭐";
+
+        estrella.style.left=
+        (Math.random()*500+100)+"px";
+
+        estrella.style.top=
+        (Math.random()*300+50)+"px";
+
+        document.body.appendChild(
+        estrella
+        );
+
+        setTimeout(function(){
+
+            estrella.remove();
+
+        },1000);
+    }
+}
+
+function verificarGanador(){
+
+    if(jugador>=META){
+
+        ganar();
+        return;
+    }
+
+    if(
+        rival1>=META ||
+        rival2>=META ||
+        rival3>=META
+    ){
+
+        perder();
+    }
+}
+
+function ganar(){
+
+    document.getElementById(
+    "operacion"
+    ).style.display="none";
+
+    document.getElementById(
+    "respuesta"
+    ).style.display="none";
+
+    document.getElementById(
+    "responder"
+    ).style.display="none";
+
+    document.getElementById(
+    "final"
+    ).style.display="block";
+
+    document.getElementById(
+    "final"
+    ).innerHTML=
+    `
+    🏆 ¡Ganaste la carrera!
+
+    <br><br>
+
+    🥇 Campeón Matemático
+
+    <br><br>
+
+    <button onclick="location.reload()">
+    🔄 Jugar otra vez
+    </button>
+    `;
+
+    hablar(
+    "Felicitaciones. Ganaste la carrera."
+    );
+}
+
+function perder(){
+
+    document.getElementById(
+    "operacion"
+    ).style.display="none";
+
+    document.getElementById(
+    "respuesta"
+    ).style.display="none";
+
+    document.getElementById(
+    "responder"
+    ).style.display="none";
+
+    document.getElementById(
+    "final"
+    ).style.display="block";
+
+    document.getElementById(
+    "final"
+    ).innerHTML=
+    `
+    😢 Otro corredor ganó la carrera
+
+    <br><br>
+
+    <button onclick="location.reload()">
+    🔄 Intentar nuevamente
+    </button>
+    `;
+
+    hablar(
+    "Otro corredor ganó la carrera."
+    );
+}
+
+</script>
+
+</body>
+</html>

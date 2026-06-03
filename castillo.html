@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Defensa del Castillo</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    text-align:center;
+    background:linear-gradient(to bottom,#87CEEB,#dff6ff);
+    overflow:hidden;
+}
+
+h1{
+    color:#4b0082;
+}
+
+#panel{
+    font-size:24px;
+    font-weight:bold;
+    margin:10px;
+}
+
+#campo{
+    position:relative;
+    width:1000px;
+    max-width:95%;
+    height:300px;
+    margin:auto;
+    border:4px solid #4b0082;
+    border-radius:20px;
+    background:#9be27f;
+    overflow:hidden;
+}
+
+#castillo{
+    position:absolute;
+    left:20px;
+    top:90px;
+    font-size:120px;
+}
+
+#monstruo{
+    position:absolute;
+    right:40px;
+    top:110px;
+    font-size:90px;
+    transition:all 0.8s;
+}
+
+#operacion{
+    font-size:38px;
+    font-weight:bold;
+    color:#003366;
+    margin-top:20px;
+}
+
+input{
+    width:180px;
+    padding:10px;
+    font-size:28px;
+    text-align:center;
+    border-radius:10px;
+}
+
+button{
+    padding:12px 25px;
+    margin:10px;
+    font-size:20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    color:white;
+}
+
+#responder{
+    background:#00bfff;
+}
+
+#menu{
+    background:#ff66b3;
+}
+
+#mensaje{
+    min-height:40px;
+    font-size:28px;
+    font-weight:bold;
+}
+
+#final{
+    display:none;
+    margin-top:20px;
+    font-size:40px;
+}
+
+.estrella{
+    position:absolute;
+    font-size:35px;
+    animation:explosion 1s linear forwards;
+}
+
+@keyframes explosion{
+
+    from{
+        opacity:1;
+        transform:scale(1);
+    }
+
+    to{
+        opacity:0;
+        transform:scale(2);
+    }
+}
+
+</style>
+</head>
+<body>
+
+<h1>🧟 Defensa del Castillo</h1>
+
+<div id="panel">
+🏆 Monstruos derrotados:
+<span id="derrotados">0</span>/10
+
+<br>
+🎯 Nivel: <span id="nivel">1</span>
+
+&nbsp;&nbsp;&nbsp;
+
+💥 Invasiones:
+<span id="invasiones">0</span>/3
+</div>
+
+<div id="campo">
+
+<div id="castillo">🏰</div>
+
+<div id="monstruo">🧟</div>
+
+</div>
+
+<div id="operacion"></div>
+
+<input type="number" id="respuesta">
+
+<br>
+
+<button id="responder" onclick="verificar()">
+Responder
+</button>
+
+<button id="menu"
+onclick="location.href='juega.html'">
+🏠 Volver al menú
+</button>
+
+<div id="mensaje"></div>
+
+<div id="final"></div>
+
+<script>
+
+let respuestaCorrecta;
+
+let derrotados=0;
+
+let nivel=1;
+
+let invasiones=0;
+
+let posicionMonstruo=0;
+const monstruos = [
+    "🧟",
+    "👹",
+    "👻",
+    "🧌",
+];
+
+function hablar(texto){
+
+    speechSynthesis.cancel();
+
+    let voz=
+    new SpeechSynthesisUtterance(texto);
+
+    voz.lang="es-ES";
+    voz.rate=1.1;
+
+    speechSynthesis.speak(voz);
+}
+
+function cambiarMonstruo(){
+
+    let aleatorio =
+    Math.floor(Math.random() * monstruos.length);
+
+    document.getElementById("monstruo").innerHTML =
+    monstruos[aleatorio];
+}
+
+window.onload=function(){
+
+    cambiarMonstruo();
+
+    let bienvenida=
+    new SpeechSynthesisUtterance(
+    "Defensa del castillo. Resuelve las operaciones para derrotar a los monstruos y proteger el reino."
+    );
+
+    bienvenida.lang="es-ES";
+
+    bienvenida.onend=function(){
+
+        nuevaOperacion();
+
+    };
+
+    speechSynthesis.speak(bienvenida);
+
+};
+
+function numero3Digitos(){
+
+    return Math.floor(Math.random()*900)+100;
+}
+
+function leerOperacion(texto){
+
+    speechSynthesis.cancel();
+
+    let voz=
+    new SpeechSynthesisUtterance(texto);
+
+    voz.lang="es-ES";
+    voz.rate=1.2;
+
+    speechSynthesis.speak(voz);
+}
+
+function nuevaOperacion(){
+
+    let tipo=
+    Math.floor(Math.random()*4)+1;
+
+    let a,b;
+
+    if(tipo===1){
+
+        a=numero3Digitos();
+        b=numero3Digitos();
+
+        respuestaCorrecta=a+b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" + "+b;
+
+        leerOperacion(
+        "¿Cuánto es "+a+" más "+b+"?"
+        );
+    }
+
+    if(tipo===2){
+
+        a=numero3Digitos();
+        b=numero3Digitos();
+
+        if(b>a){
+
+            let aux=a;
+            a=b;
+            b=aux;
+        }
+
+        respuestaCorrecta=a-b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" - "+b;
+
+        leerOperacion(
+        "¿Cuánto es "+a+" menos "+b+"?"
+        );
+    }
+
+    if(tipo===3){
+
+        a=Math.floor(Math.random()*11)+2;
+        b=Math.floor(Math.random()*11)+2;
+
+        respuestaCorrecta=a*b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" × "+b;
+
+        leerOperacion(
+        "¿Cuánto es "+a+" por "+b+"?"
+        );
+    }
+
+    if(tipo===4){
+
+        b=Math.floor(Math.random()*11)+2;
+
+        respuestaCorrecta=
+        Math.floor(Math.random()*11)+2;
+
+        a=respuestaCorrecta*b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" ÷ "+b;
+
+        leerOperacion(
+        "¿Cuánto es "+a+
+        " dividido entre "+b+"?"
+        );
+    }
+
+    document.getElementById("respuesta").value="";
+}
+
+function verificar(){
+
+    let r=Number(
+    document.getElementById("respuesta").value
+    );
+
+    if(r===respuestaCorrecta){
+
+        derrotados++;
+
+        nivel = Math.floor(derrotados/2)+1;
+
+        if(nivel>5){
+            nivel=5;
+        }
+
+        document.getElementById("nivel").innerHTML =
+        nivel;
+
+        document.getElementById(
+        "derrotados"
+        ).innerHTML=derrotados;
+
+        document.getElementById(
+        "mensaje"
+        ).innerHTML=
+        "✅ ¡Monstruo derrotado!";
+
+        hablar(
+        "Excelente. Monstruo derrotado."
+        );
+
+        explosion();
+
+        reiniciarMonstruo();
+
+        if(derrotados>=10){
+
+            ganar();
+            return;
+        }
+
+    }else{
+
+        document.getElementById(
+        "mensaje"
+        ).innerHTML=
+        "❌ El monstruo avanza";
+
+        avanzarMonstruo();
+    }
+
+    nuevaOperacion();
+}
+
+function avanzarMonstruo(){
+
+    posicionMonstruo+=120;
+
+    document.getElementById(
+    "monstruo"
+    ).style.transform=
+    "translateX(-"+posicionMonstruo+"px)";
+
+    if(posicionMonstruo>=600){
+
+        invasiones++;
+
+        document.getElementById(
+        "invasiones"
+        ).innerHTML=invasiones;
+
+        hablar(
+        "El monstruo llegó al castillo."
+        );
+
+        reiniciarMonstruo();
+
+        if(invasiones>=3){
+
+            perder();
+        }
+    }
+}
+
+function reiniciarMonstruo(){
+
+    posicionMonstruo = 0;
+
+    document.getElementById("monstruo").style.transform =
+    "translateX(0px)";
+
+    cambiarMonstruo();
+}
+
+function explosion(){
+
+    for(let i=0;i<10;i++){
+
+        let estrella=
+        document.createElement("div");
+
+        estrella.className=
+        "estrella";
+
+        estrella.innerHTML="⭐";
+
+        estrella.style.left=
+        (Math.random()*300+500)+"px";
+
+        estrella.style.top=
+        (Math.random()*120+80)+"px";
+
+        document.body.appendChild(
+        estrella
+        );
+
+        setTimeout(function(){
+
+            estrella.remove();
+
+        },1000);
+    }
+}
+
+function ganar(){
+
+    document.getElementById(
+    "operacion"
+    ).style.display="none";
+
+    document.getElementById(
+    "respuesta"
+    ).style.display="none";
+
+    document.getElementById(
+    "responder"
+    ).style.display="none";
+
+    document.getElementById(
+    "final"
+    ).style.display="block";
+
+    document.getElementById(
+    "final"
+    ).innerHTML=
+    `
+    🏆 ¡Has salvado el reino!
+
+    <br><br>
+
+    🥇 Medalla de Defensor
+
+    <br><br>
+
+    <button onclick="location.reload()">
+    🔄 Jugar otra vez
+    </button>
+    `;
+
+    hablar(
+    "Felicitaciones. Has salvado el reino."
+    );
+}
+
+function perder(){
+
+    document.getElementById(
+    "operacion"
+    ).style.display="none";
+
+    document.getElementById(
+    "respuesta"
+    ).style.display="none";
+
+    document.getElementById(
+    "responder"
+    ).style.display="none";
+
+    document.getElementById(
+    "final"
+    ).style.display="block";
+
+    document.getElementById(
+    "final"
+    ).innerHTML=
+    `
+    💥 El castillo fue invadido
+
+    <br><br>
+
+    <button onclick="location.reload()">
+    🔄 Intentar otra vez
+    </button>
+    `;
+
+    hablar(
+    "El castillo fue invadido."
+    );
+}
+
+</script>
+
+</body>
+</html>

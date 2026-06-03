@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Búsqueda del Tesoro</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    text-align:center;
+    overflow:hidden;
+    background:linear-gradient(#6ec6ff,#87ceeb);
+}
+
+h1{
+    color:#8B4513;
+    margin:10px;
+}
+
+#panel{
+    font-size:24px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+#mapa{
+    position:relative;
+    width:1000px;
+    max-width:95%;
+    height:420px;
+    margin:auto;
+    border:5px solid #8B4513;
+    border-radius:20px;
+    background:#f4d35e;
+    overflow:hidden;
+}
+
+/* Mar */
+
+#mar{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:90px;
+    background:#00bfff;
+}
+
+/* Palmeras */
+
+.palmera{
+    position:absolute;
+    font-size:55px;
+}
+
+/* Camino */
+
+.casilla{
+    position:absolute;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:#deb887;
+    border:3px solid #8B4513;
+}
+
+/* Pirata */
+
+#pirata{
+    position:absolute;
+    font-size:55px;
+    z-index:10;
+    transition:all .8s;
+}
+
+/* Tesoro */
+
+#tesoro{
+    position:absolute;
+    right:40px;
+    top:50px;
+    font-size:80px;
+}
+
+/* Cofres */
+
+.cofre{
+    position:absolute;
+    font-size:45px;
+}
+
+#operacion{
+    font-size:38px;
+    margin-top:20px;
+    color:#003366;
+    font-weight:bold;
+}
+
+input{
+    font-size:28px;
+    width:180px;
+    text-align:center;
+    padding:10px;
+    border-radius:10px;
+}
+
+button{
+    padding:12px 25px;
+    margin:10px;
+    border:none;
+    border-radius:10px;
+    font-size:20px;
+    cursor:pointer;
+    color:white;
+}
+
+#responder{
+    background:#00bfff;
+}
+
+#volver{
+    background:#ff66b3;
+}
+
+#mensaje{
+    min-height:40px;
+    font-size:28px;
+    font-weight:bold;
+}
+
+#final{
+    display:none;
+    font-size:40px;
+    color:green;
+    margin-top:20px;
+}
+
+.moneda{
+    position:absolute;
+    font-size:35px;
+    animation:caer 2s linear forwards;
+}
+
+@keyframes caer{
+
+    from{
+        transform:translateY(0px);
+        opacity:1;
+    }
+
+    to{
+        transform:translateY(250px);
+        opacity:0;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<h1>🏴‍☠️ Búsqueda del Tesoro</h1>
+
+<div id="panel">
+⭐ Monedas: <span id="monedas">0</span>
+&nbsp;&nbsp;&nbsp;
+📍 Avance: <span id="avance">0</span>/10
+</div>
+
+<div id="mapa">
+
+<div id="mar"></div>
+
+<div class="palmera" style="left:40px;top:40px;">🌴</div>
+<div class="palmera" style="left:300px;top:250px;">🌴</div>
+<div class="palmera" style="left:700px;top:180px;">🌴</div>
+
+<div id="tesoro">💰</div>
+
+<div class="cofre" style="left:250px;top:100px;">📦</div>
+<div class="cofre" style="left:520px;top:250px;">📦</div>
+<div class="cofre" style="left:760px;top:120px;">📦</div>
+
+<div class="casilla" style="left:40px;top:300px;"></div>
+<div class="casilla" style="left:130px;top:250px;"></div>
+<div class="casilla" style="left:220px;top:180px;"></div>
+<div class="casilla" style="left:320px;top:120px;"></div>
+<div class="casilla" style="left:430px;top:180px;"></div>
+<div class="casilla" style="left:520px;top:260px;"></div>
+<div class="casilla" style="left:630px;top:220px;"></div>
+<div class="casilla" style="left:720px;top:140px;"></div>
+<div class="casilla" style="left:820px;top:90px;"></div>
+<div class="casilla" style="left:900px;top:70px;"></div>
+
+<div id="pirata">🏴‍☠️</div>
+
+</div>
+
+<div id="operacion"></div>
+
+<input type="number" id="respuesta">
+
+<br>
+
+<button id="responder" onclick="verificar()">Responder</button>
+
+<button id="volver" onclick="location.href='juega.html'">
+🏠 Volver al menú
+</button>
+
+<div id="mensaje"></div>
+
+<div id="final"></div>
+
+<script>
+
+let respuestaCorrecta;
+let posicion=0;
+let monedas=0;
+
+const ruta=[
+{left:40,top:300},
+{left:130,top:250},
+{left:220,top:180},
+{left:320,top:120},
+{left:430,top:180},
+{left:520,top:260},
+{left:630,top:220},
+{left:720,top:140},
+{left:820,top:90},
+{left:900,top:70}
+];
+
+const cofres=[3,5,7];
+
+function hablar(texto){
+
+    speechSynthesis.cancel();
+
+    let voz=
+    new SpeechSynthesisUtterance(texto);
+
+    voz.lang="es-ES";
+    voz.rate=1.0;
+
+    speechSynthesis.speak(voz);
+}
+
+window.onload=function(){
+
+    moverPirata();
+
+    let bienvenida =
+    new SpeechSynthesisUtterance(
+    "Búsqueda del tesoro. Resuelve operaciones para avanzar por la isla y encontrar el tesoro."
+    );
+
+    bienvenida.lang="es-ES";
+    bienvenida.rate=1.1;
+
+    bienvenida.onend=function(){
+
+        nuevaOperacion();
+
+    };
+
+    speechSynthesis.speak(bienvenida);
+};
+
+function numero3Digitos(){
+
+    return Math.floor(Math.random()*900)+100;
+}
+
+function leerOperacion(texto){
+
+    let voz=
+    new SpeechSynthesisUtterance(texto);
+
+    voz.lang="es-ES";
+
+    speechSynthesis.speak(voz);
+}
+
+function nuevaOperacion(){
+
+    let tipo=Math.floor(Math.random()*4)+1;
+
+    let a,b;
+
+    if(tipo===1){
+
+        a=numero3Digitos();
+        b=numero3Digitos();
+
+        respuestaCorrecta=a+b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" más "+b;
+    }
+
+    if(tipo===2){
+
+        a=numero3Digitos();
+        b=numero3Digitos();
+
+        if(b>a){
+            let aux=a;
+            a=b;
+            b=aux;
+        }
+
+        respuestaCorrecta=a-b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" menos "+b;
+    }
+
+    if(tipo===3){
+
+        a=Math.floor(Math.random()*11)+2;
+        b=Math.floor(Math.random()*11)+2;
+
+        respuestaCorrecta=a*b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" por "+b;
+    }
+
+    if(tipo===4){
+
+        b=Math.floor(Math.random()*11)+2;
+
+        respuestaCorrecta=
+        Math.floor(Math.random()*11)+2;
+
+        a=respuestaCorrecta*b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" dividido entre "+b;
+    }
+
+    document.getElementById("respuesta").value="";
+
+    leerOperacion(
+    document.getElementById("operacion").innerText
+    );
+}
+
+function verificar(){
+
+    let r=Number(
+    document.getElementById("respuesta").value
+    );
+
+    if(r===respuestaCorrecta){
+
+        posicion++;
+
+        document.getElementById("avance").innerHTML=
+        posicion;
+
+        document.getElementById("mensaje").innerHTML=
+        "✅ ¡Correcto!";
+
+        moverPirata();
+
+        if(cofres.includes(posicion)){
+
+            monedas+=5;
+
+            document.getElementById("monedas").innerHTML=
+            monedas;
+
+            lluviaMonedas();
+
+            hablar(
+            "Encontraste un cofre. Ganaste cinco monedas."
+            );
+        }
+
+        if(posicion>=10){
+
+            ganar();
+            return;
+        }
+
+    }else{
+
+    document.getElementById("mensaje").innerHTML=
+    "❌ Te equivocaste. Retrocedes una casilla";
+
+    hablar(
+    "Te equivocaste. Retrocedes una casilla"
+    );
+
+    if(posicion > 0){
+
+        posicion--;
+
+        document.getElementById("avance").innerHTML=
+        posicion;
+
+        moverPirata();
+    }
+
+    if(monedas > 0){
+
+        monedas--;
+
+        document.getElementById("monedas").innerHTML=
+        monedas;
+    }
+}
+
+    nuevaOperacion();
+}
+
+function moverPirata(){
+
+    let p=ruta[posicion];
+
+    if(!p) return;
+
+    document.getElementById("pirata").style.left=
+    p.left+"px";
+
+    document.getElementById("pirata").style.top=
+    p.top+"px";
+}
+
+function lluviaMonedas(){
+
+    for(let i=0;i<10;i++){
+
+        let moneda=
+        document.createElement("div");
+
+        moneda.className="moneda";
+
+        moneda.innerHTML="⭐";
+
+        moneda.style.left=
+        (Math.random()*800+50)+"px";
+
+        moneda.style.top="50px";
+
+        document.body.appendChild(moneda);
+
+        setTimeout(function(){
+
+            moneda.remove();
+
+        },2000);
+    }
+}
+
+function ganar(){
+
+    document.getElementById("operacion").style.display=
+    "none";
+
+    document.getElementById("respuesta").style.display=
+    "none";
+
+    document.getElementById("responder").style.display=
+    "none";
+
+    document.getElementById("final").style.display=
+    "block";
+
+    document.getElementById("final").innerHTML=
+    `
+    🎉 ¡Encontraste el tesoro!<br><br>
+    🥇 Medalla de Explorador<br><br>
+
+    <button onclick="location.reload()">
+    🔄 Jugar otra vez
+    </button>
+    `;
+
+    hablar(
+    "Felicitaciones. Encontraste el tesoro escondido."
+    );
+}
+
+</script>
+
+</body>
+</html>
