@@ -135,15 +135,29 @@ p{
     </div>
 
     <div class="juego">
-        <h2>🤖 Robot Constructor</h2>
+        <h2>🦖 Rescate de Dinosaurios</h2>
 
         <button class="boton jugar"
-        onclick="jugar('Robot Constructor','robot_constructor.html')">
+        onclick="jugar('Rescate de Dinosaurios','rescate_dinosaurios.html')">
         Jugar
         </button>
 
         <button class="boton audio"
-        onclick="escucharJuego('robot')">
+        onclick="escucharJuego('rescate')">
+        🔊 Escuchar
+        </button>
+    </div>
+
+    <div class="juego">
+        <h2>🚒 Bomberos Matemáticos</h2>
+
+        <button class="boton jugar"
+        onclick="jugar('Bomberos Matemáticos','bomberos_matematicos.html')">
+        Jugar
+        </button>
+
+        <button class="boton audio"
+        onclick="escucharJuego('bomberos')">
         🔊 Escuchar
         </button>
     </div>
@@ -195,6 +209,14 @@ function escucharJuego(tipo){
 
         case "robot":
             texto = "Robot Constructor. Resuelve desafíos matemáticos para conseguir piezas y construir un robot completo.";
+            break;
+
+        case "rescate":
+            texto = "Rescate de Dinosaurios. Resuelve operaciones matemáticas para liberar al dinosaurio de la jaula"
+            break;
+
+        case "bomberos":
+            texto = "Bomberos Matemáticos. Resuelve operaciones para salvar a la ciudad de los incendios"
             break;
     }
 

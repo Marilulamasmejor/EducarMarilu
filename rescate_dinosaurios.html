@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rescate de Dinosaurios</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    text-align:center;
+    background:linear-gradient(to bottom,#87ceeb,#c7f7a4);
+}
+
+h1{
+    color:#006600;
+}
+
+#panel{
+    font-size:24px;
+    font-weight:bold;
+    margin:10px;
+}
+
+#zonaJuego{
+    width:700px;
+    max-width:95%;
+    margin:auto;
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 0 15px rgba(0,0,0,.2);
+}
+
+#jaula{
+    position:relative;
+    width:350px;
+    height:250px;
+    margin:20px auto;
+    border:8px solid #666;
+    border-radius:10px;
+    background:#e5e5e5;
+    overflow:visible;
+}
+
+#dinosaurio{
+    position:absolute;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:120px;
+}
+
+.barra{
+    position:absolute;
+    top:0;
+    width:12px;
+    height:100%;
+    background:#555;
+}
+
+#operacion{
+    font-size:38px;
+    color:#003366;
+    font-weight:bold;
+    margin-top:20px;
+}
+
+input{
+    font-size:28px;
+    width:180px;
+    text-align:center;
+    padding:10px;
+    border-radius:10px;
+}
+
+button{
+    padding:12px 25px;
+    margin:10px;
+    border:none;
+    border-radius:10px;
+    font-size:20px;
+    cursor:pointer;
+    color:white;
+}
+
+#responder{
+    background:#00bfff;
+}
+
+#volver{
+    background:#ff66b3;
+}
+
+#mensaje{
+    min-height:40px;
+    font-size:28px;
+    font-weight:bold;
+}
+
+#final{
+    display:none;
+    font-size:40px;
+    color:green;
+    margin-top:20px;
+}
+
+.estrella{
+    position:fixed;
+    font-size:35px;
+    animation:caer 1.5s linear forwards;
+}
+
+@keyframes caer{
+
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+    to{
+        opacity:0;
+        transform:translateY(250px);
+    }
+}
+
+@keyframes celebrar{
+
+    0%{
+        transform:translateX(-50%) translateY(0);
+    }
+
+    50%{
+        transform:translateX(-50%) translateY(-20px);
+    }
+
+    100%{
+        transform:translateX(-50%) translateY(0);
+    }
+}
+
+.dinoLibre{
+    animation:celebrar .6s infinite;
+}
+
+</style>
+</head>
+<body>
+
+<h1>🦖 Rescate de Dinosaurios</h1>
+
+<div id="panel">
+🔓 Barras rotas:
+<span id="avance">0</span>/8
+</div>
+
+<div id="zonaJuego">
+
+    <div id="jaula">
+
+        <div id="dinosaurio">🦖</div>
+
+        <div class="barra" id="barra1" style="left:35px;"></div>
+        <div class="barra" id="barra2" style="left:75px;"></div>
+        <div class="barra" id="barra3" style="left:115px;"></div>
+        <div class="barra" id="barra4" style="left:155px;"></div>
+        <div class="barra" id="barra5" style="left:195px;"></div>
+        <div class="barra" id="barra6" style="left:235px;"></div>
+        <div class="barra" id="barra7" style="left:275px;"></div>
+        <div class="barra" id="barra8" style="left:315px;"></div>
+
+    </div>
+
+</div>
+
+<div id="operacion"></div>
+
+<input type="number" id="respuesta">
+
+<br>
+
+<button id="responder" onclick="verificar()">
+Responder
+</button>
+
+<button id="volver"
+onclick="location.href='juega.html'">
+🏠 Volver al menú
+</button>
+
+<div id="mensaje"></div>
+
+<div id="final"></div>
+
+<script>
+
+let respuestaCorrecta;
+let barrasRotas=0;
+
+const dinosaurios=[
+"🦖",
+"🦕",
+];
+
+function hablar(texto){
+
+    speechSynthesis.cancel();
+
+    let voz=
+    new SpeechSynthesisUtterance(texto);
+
+    voz.lang="es-ES";
+    voz.rate=1.1;
+
+    speechSynthesis.speak(voz);
+}
+
+window.onload=function(){
+
+    let aleatorio=
+    Math.floor(Math.random()*dinosaurios.length);
+
+    document.getElementById("dinosaurio").innerHTML=
+    dinosaurios[aleatorio];
+
+    let bienvenida =
+    new SpeechSynthesisUtterance(
+    "Rescate de dinosaurios. Resuelve operaciones para liberar al dinosaurio."
+    );
+
+    bienvenida.lang="es-ES";
+    bienvenida.rate=1.1;
+
+    bienvenida.onend=function(){
+
+        nuevaOperacion();
+
+    };
+
+    speechSynthesis.speak(bienvenida);
+
+};
+
+function numero3Digitos(){
+
+    return Math.floor(Math.random()*900)+100;
+}
+
+function leerOperacion(texto){
+
+    document.getElementById("respuesta").disabled = true;
+    document.getElementById("responder").disabled = true;
+
+    let voz =
+    new SpeechSynthesisUtterance(texto);
+
+    voz.lang = "es-ES";
+    voz.rate = 1.2;
+
+    voz.onend = function(){
+
+        document.getElementById("respuesta").disabled = false;
+        document.getElementById("responder").disabled = false;
+
+        document.getElementById("respuesta").focus();
+    };
+
+    speechSynthesis.speak(voz);
+}
+
+function nuevaOperacion(){
+
+    let tipo=
+    Math.floor(Math.random()*4)+1;
+
+    let a,b;
+
+    if(tipo===1){
+
+        a=numero3Digitos();
+        b=numero3Digitos();
+
+        respuestaCorrecta=a+b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" + "+b;
+
+        leerOperacion(
+        "¿Cuánto es "+a+" más "+b+"?"
+        );
+    }
+
+    if(tipo===2){
+
+        a=numero3Digitos();
+        b=numero3Digitos();
+
+        if(b>a){
+
+            let aux=a;
+            a=b;
+            b=aux;
+        }
+
+        respuestaCorrecta=a-b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" - "+b;
+
+        leerOperacion(
+        "¿Cuánto es "+a+" menos "+b+"?"
+        );
+    }
+
+    if(tipo===3){
+
+        a=Math.floor(Math.random()*11)+2;
+        b=Math.floor(Math.random()*11)+2;
+
+        respuestaCorrecta=a*b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" × "+b;
+
+        leerOperacion(
+        "¿Cuánto es "+a+" por "+b+"?"
+        );
+    }
+
+    if(tipo===4){
+
+        b=Math.floor(Math.random()*11)+2;
+
+        respuestaCorrecta=
+        Math.floor(Math.random()*11)+2;
+
+        a=respuestaCorrecta*b;
+
+        document.getElementById("operacion").innerHTML=
+        a+" ÷ "+b;
+
+        leerOperacion(
+        "¿Cuánto es "+a+
+        " dividido entre "+b+"?"
+        );
+    }
+
+    document.getElementById("respuesta").value="";
+}
+
+function verificar(){
+
+    let r=
+    Number(
+    document.getElementById("respuesta").value
+    );
+
+    if(r===respuestaCorrecta){
+
+        barrasRotas++;
+
+        document.getElementById("avance").innerHTML=
+        barrasRotas;
+
+        document.getElementById(
+        "barra"+barrasRotas
+        ).style.display="none";
+
+        document.getElementById("mensaje").innerHTML=
+        "✅ ¡Correcto!";
+
+        hablar(
+        "Correcto. Rompiste una barra."
+        );
+
+        estrellas();
+
+        if(barrasRotas>=8){
+
+            ganar();
+            return;
+        }
+
+    }else{
+
+        document.getElementById("mensaje").innerHTML=
+        "❌ Incorrecto";
+
+        hablar(
+        "Incorrecto. Sigue intentando."
+        );
+    }
+
+    nuevaOperacion();
+}
+
+function estrellas(){
+
+    for(let i=0;i<10;i++){
+
+        let estrella=
+        document.createElement("div");
+
+        estrella.className="estrella";
+
+        estrella.innerHTML="⭐";
+
+        estrella.style.left=
+        Math.random()*window.innerWidth+"px";
+
+        estrella.style.top="100px";
+
+        document.body.appendChild(
+        estrella
+        );
+
+        setTimeout(function(){
+
+            estrella.remove();
+
+        },1500);
+    }
+}
+
+function ganar(){
+
+    document.getElementById("dinosaurio")
+    .classList.add("dinoLibre");
+
+    document.getElementById("jaula").style.borderColor=
+    "#00cc00";
+
+    document.getElementById("dinosaurio").innerHTML+=" 🎉";
+
+    document.getElementById("operacion").style.display=
+    "none";
+
+    document.getElementById("respuesta").style.display=
+    "none";
+
+    document.getElementById("responder").style.display=
+    "none";
+
+    document.getElementById("final").style.display=
+    "block";
+
+    document.getElementById("final").innerHTML=
+    `
+    🏆 ¡Dinosaurio liberado!
+
+    <br><br>
+
+    🥇 Explorador Jurásico
+
+    <br><br>
+
+    <button onclick="location.reload()">
+    🔄 Jugar otra vez
+    </button>
+    `;
+
+    hablar(
+    "Felicitaciones. Has liberado al dinosaurio."
+    );
+}
+
+document.getElementById("respuesta")
+.addEventListener("keydown",function(e){
+
+    if(this.disabled){
+
+        e.preventDefault();
+    }
+
+});
+
+</script>
+
+</body>
+</html>
