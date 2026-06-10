@@ -1,0 +1,11 @@
+.estrella{
+    position:absolute;
+    color:white;
+    animation:parpadear 2s infinite;
+}
+
+@keyframes parpadear{
+    0%{opacity:0.2;}
+    50%{opacity:1;}
+    100%{opacity:0.2;}
+}

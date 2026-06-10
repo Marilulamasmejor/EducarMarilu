@@ -83,6 +83,33 @@ button{
     transition:0.3s;
 }
 
+.botonLink{
+    display:inline-block;
+    padding:12px 25px;
+    font-size:18px;
+    background:#ff66b3;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+    transition:0.3s;
+}
+
+.linkSimple{
+    color:#4a6cf7;
+    text-decoration:none;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.linkSimple:hover{
+    text-decoration:underline;
+}
+
+.botonLink:hover{
+    background:#e60073;
+    transform:scale(1.05);
+}
+
 button:hover{
     background:#3a55d1;
     transform:scale(1.05);
@@ -108,8 +135,14 @@ button:hover{
 
         <!-- BOTÓN -->
         <button onclick="irJuego()">Comenzar juego</button>
-        <a href="basico4.html">4° Básico</a>
-        <a href="todos.html">Juegos</a>
+
+        <br><br>
+
+        <a class="botonLink" href="basico4.html">4° Básico</a>
+
+        <br><br>
+
+        <a class="linkSimple" href="todos.html">Juegos</a>
 
 
     </div>

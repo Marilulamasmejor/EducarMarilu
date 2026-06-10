@@ -386,6 +386,51 @@ function explosion(){
     }
 }
 
+function confeti(){
+
+    for(let i=0;i<150;i++){
+
+        let papel =
+        document.createElement("div");
+
+        papel.innerHTML =
+        ["🎉","🎊","⭐","✨"][Math.floor(Math.random()*4)];
+
+        papel.style.position="fixed";
+
+        papel.style.left=
+        Math.random()*window.innerWidth+"px";
+
+        papel.style.top="-50px";
+
+        papel.style.fontSize=
+        (Math.random()*20+20)+"px";
+
+        papel.style.zIndex="9999";
+
+        document.body.appendChild(papel);
+
+        let velocidad=
+        Math.random()*5+3;
+
+        let y=-50;
+
+        let anim=setInterval(function(){
+
+            y+=velocidad;
+
+            papel.style.top=y+"px";
+
+            if(y>window.innerHeight){
+
+                clearInterval(anim);
+                papel.remove();
+            }
+
+        },20);
+    }
+}
+
 function ganar(){
 
     document.getElementById("operacion").style.display="none";
@@ -408,6 +453,8 @@ function ganar(){
     🔄 Jugar otra vez
     </button>
     `;
+
+    confeti();
 
     hablar("Felicitaciones. Has salvado el reino.");
 }

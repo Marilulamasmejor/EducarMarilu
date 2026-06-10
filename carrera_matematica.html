@@ -46,7 +46,7 @@ h1{
 
 .meta{
     position:absolute;
-    left:20px;
+    left: 180px;
     top:0;
     height:100%;
     width:10px;
@@ -430,6 +430,56 @@ function estrellas(){
     }
 }
 
+function confeti(){
+
+    for(let i=0;i<150;i++){
+
+        let papel =
+        document.createElement("div");
+
+        papel.innerHTML =
+        ["🎉","🎊","⭐","✨"][Math.floor(Math.random()*4)];
+
+        papel.style.position="fixed";
+        papel.style.left=Math.random()*window.innerWidth+"px";
+        papel.style.top="-50px";
+        papel.style.fontSize=(Math.random()*20+20)+"px";
+        papel.style.zIndex="9999";
+
+        document.body.appendChild(papel);
+
+        let velocidad=Math.random()*5+3;
+        let y=-50;
+
+        let anim=setInterval(function(){
+
+            y+=velocidad;
+            papel.style.top=y+"px";
+
+            if(y>window.innerHeight){
+
+                clearInterval(anim);
+                papel.remove();
+            }
+
+        },20);
+    }
+}
+
+function carreraFinal(){
+
+    let auto =
+    document.getElementById("jugador");
+
+    auto.style.transition =
+    "all 1.2s ease-out";
+
+    jugador = META + 50;
+
+    auto.style.right =
+    jugador + "px";
+}
+
 function verificarGanador(){
 
     if(jugador>=META){
@@ -450,42 +500,51 @@ function verificarGanador(){
 
 function ganar(){
 
-    document.getElementById(
-    "operacion"
-    ).style.display="none";
+    carreraFinal();
 
-    document.getElementById(
-    "respuesta"
-    ).style.display="none";
+    confeti();
 
-    document.getElementById(
-    "responder"
-    ).style.display="none";
+    setTimeout(function(){
 
-    document.getElementById(
-    "final"
-    ).style.display="block";
+        document.getElementById(
+        "operacion"
+        ).style.display="none";
 
-    document.getElementById(
-    "final"
-    ).innerHTML=
-    `
-    🏆 ¡Ganaste la carrera!
+        document.getElementById(
+        "respuesta"
+        ).style.display="none";
 
-    <br><br>
+        document.getElementById(
+        "responder"
+        ).style.display="none";
 
-    🥇 Campeón Matemático
+        document.getElementById(
+        "final"
+        ).style.display="block";
 
-    <br><br>
+        document.getElementById(
+        "final"
+        ).innerHTML=
+        `
+        🏆 ¡Ganaste la carrera!
 
-    <button onclick="location.reload()">
-    🔄 Jugar otra vez
-    </button>
-    `;
+        <br><br>
 
-    hablar(
-    "Felicitaciones. Ganaste la carrera."
-    );
+        🥇 Campeón Matemático
+
+        <br><br>
+
+        <button onclick="location.reload()">
+        🔄 Jugar otra vez
+        </button>
+        `;
+
+        hablar(
+        "Felicitaciones. Ganaste la carrera."
+        );
+
+    },1200);
+
 }
 
 function perder(){
