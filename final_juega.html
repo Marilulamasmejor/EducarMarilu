@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Final del Juego</title>
+
+<style>
+
+body{
+    text-align:center;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(to bottom,#7de3ff,#ffffff);
+    overflow:hidden;
+    margin:0;
+    padding-top:30px;
+}
+
+h1{
+    color:#004d99;
+    font-size:50px;
+}
+
+p{
+    font-size:28px;
+}
+
+#puntaje{
+    font-size:50px;
+    font-weight:bold;
+    color:#004d99;
+    margin:20px;
+}
+
+#estrellas{
+    font-size:120px;
+    margin:20px;
+}
+
+#btnInicio{
+    margin-top:30px;
+    padding:15px 35px;
+    font-size:24px;
+    border:none;
+    border-radius:15px;
+    background:#00c3ff;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+#btnInicio:hover{
+    background:#0099cc;
+    transform:scale(1.05);
+}
+
+.confeti{
+    position:fixed;
+    top:-20px;
+    z-index:9999;
+    pointer-events:none;
+    animation:caer linear forwards;
+}
+
+@keyframes caer{
+    to{
+        transform:translateY(110vh) rotate(720deg);
+        opacity:0;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>🏆 ¡Felicitaciones!</h1>
+
+<p>Terminaste los 6 juegos</p>
+
+<div id="puntaje"></div>
+
+<div id="estrellas">
+⭐ ⭐ ⭐
+</div>
+
+<button id="btnInicio" onclick="volverInicio()">
+🏠 Volver al inicio
+</button>
+
+<script>
+
+let puntaje =
+Number(localStorage.getItem("puntajeTotal")) || 0;
+
+document.getElementById("puntaje").innerHTML =
+"Puntaje Total: " + puntaje;
+
+window.onload = function(){
+
+    lanzarConfeti();
+
+    let mensaje =
+    "Felicitaciones. Terminaste los seis juegos. Tu puntaje final es " +
+    puntaje +
+    " puntos.";
+
+    let voz =
+    new SpeechSynthesisUtterance(mensaje);
+
+    voz.lang = "es-ES";
+    voz.rate = 1;
+
+    speechSynthesis.speak(voz);
+};
+
+function volverInicio(){
+
+    speechSynthesis.cancel();
+
+    localStorage.clear();
+
+    location.href = "bienvenida.html";
+}
+
+function lanzarConfeti(){
+
+    const emojis =
+    ["🎉","🎊","⭐","✨","🎈","🏆"];
+
+    for(let i=0;i<150;i++){
+
+        let confeti =
+        document.createElement("div");
+
+        confeti.className = "confeti";
+
+        confeti.innerHTML =
+        emojis[Math.floor(
+        Math.random()*emojis.length)];
+
+        confeti.style.left =
+        Math.random()*100 + "vw";
+
+        confeti.style.fontSize =
+        (Math.random()*25+15) + "px";
+
+        confeti.style.animationDuration =
+        (Math.random()*3+2) + "s";
+
+        document.body.appendChild(confeti);
+
+        setTimeout(function(){
+            confeti.remove();
+        },5000);
+    }
+}
+
+</script>
+
+</body>
+</html>

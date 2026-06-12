@@ -68,11 +68,32 @@ p{
     background:#e60073;
 }
 
+#puntajeGeneral{
+
+    font-size:28px;
+    font-weight:bold;
+
+    background:white;
+
+    width:300px;
+
+    margin:20px auto;
+
+    padding:15px;
+
+    border-radius:15px;
+}
+
 </style>
 </head>
 <body>
 
 <h1>🎮 Zona de Juegos Matemáticos</h1>
+
+<div id="puntajeGeneral">
+🏆 Puntaje Total:
+<span id="puntaje">0</span>
+</div>
 
 <p>Elige un juego para comenzar a practicar</p>
 
@@ -168,6 +189,24 @@ p{
 
 // Se ejecuta cuando carga la página
 window.onload = function(){
+
+    if(!localStorage.getItem("puntajeTotal")){
+
+    localStorage.setItem("puntajeTotal",0);
+
+}
+
+if(!localStorage.getItem("juegosCompletados")){
+
+    localStorage.setItem(
+        "juegosCompletados",
+        "[]"
+    );
+
+}
+
+    document.getElementById("puntaje").innerHTML =
+    localStorage.getItem("puntajeTotal") || 0;
 
     let bienvenida = new SpeechSynthesisUtterance(
         "Zona de juegos matemáticos. Elige un juego para comenzar a practicar."

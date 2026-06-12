@@ -167,6 +167,37 @@ let nivel=1;
 let invasiones=0;
 let posicionMonstruo=0;
 
+let puntajeTotal =
+Number(localStorage.getItem("puntajeTotal")) || 0;
+
+let juegosCompletados =
+JSON.parse(localStorage.getItem("juegosCompletados")) || [];
+
+function guardarPuntaje(puntos,nombreJuego){
+
+    puntajeTotal += puntos;
+
+    localStorage.setItem(
+        "puntajeTotal",
+        puntajeTotal
+    );
+
+    if(!juegosCompletados.includes(nombreJuego)){
+
+        juegosCompletados.push(nombreJuego);
+
+        localStorage.setItem(
+            "juegosCompletados",
+            JSON.stringify(juegosCompletados)
+        );
+    }
+
+    if(juegosCompletados.length >= 6){
+
+        location.href="final_juega.html";
+    }
+}
+
 const monstruos = [
     "🧟",
     "👹",
@@ -432,6 +463,8 @@ function confeti(){
 }
 
 function ganar(){
+
+    guardarPuntaje(100,"Castillo");
 
     document.getElementById("operacion").style.display="none";
     document.getElementById("respuesta").style.display="none";

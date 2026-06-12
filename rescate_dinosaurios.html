@@ -199,6 +199,37 @@ onclick="location.href='juega.html'">
 let respuestaCorrecta;
 let barrasRotas=0;
 
+let puntajeTotal =
+Number(localStorage.getItem("puntajeTotal")) || 0;
+
+let juegosCompletados =
+JSON.parse(localStorage.getItem("juegosCompletados")) || [];
+
+function guardarPuntaje(puntos,nombreJuego){
+
+    puntajeTotal += puntos;
+
+    localStorage.setItem(
+        "puntajeTotal",
+        puntajeTotal
+    );
+
+    if(!juegosCompletados.includes(nombreJuego)){
+
+        juegosCompletados.push(nombreJuego);
+
+        localStorage.setItem(
+            "juegosCompletados",
+            JSON.stringify(juegosCompletados)
+        );
+    }
+
+    if(juegosCompletados.length >= 6){
+
+        location.href="final_juega.html";
+    }
+}
+
 const dinosaurios=[
 "🦖",
 "🦕",
@@ -425,6 +456,8 @@ function estrellas(){
 }
 
 function ganar(){
+
+    guardarPuntaje(80,"Dinosaurios");
 
     document.getElementById("dinosaurio")
     .classList.add("dinoLibre");

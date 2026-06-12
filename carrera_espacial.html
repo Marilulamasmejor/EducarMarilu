@@ -221,6 +221,37 @@ let respuestaCorrecta;
 let aciertos = 0;
 let posicion = 0;
 
+let puntajeTotal =
+Number(localStorage.getItem("puntajeTotal")) || 0;
+
+let juegosCompletados =
+JSON.parse(localStorage.getItem("juegosCompletados")) || [];
+
+function guardarPuntaje(puntos,nombreJuego){
+
+    puntajeTotal += puntos;
+
+    localStorage.setItem(
+        "puntajeTotal",
+        puntajeTotal
+    );
+
+    if(!juegosCompletados.includes(nombreJuego)){
+
+        juegosCompletados.push(nombreJuego);
+
+        localStorage.setItem(
+            "juegosCompletados",
+            JSON.stringify(juegosCompletados)
+        );
+    }
+
+    if(juegosCompletados.length >= 6){
+
+        location.href="final_juega.html";
+    }
+}
+
 function hablar(texto){
 
     speechSynthesis.cancel();
@@ -325,8 +356,8 @@ function nuevaOperacion(){
     document.getElementById("respuesta").value="";
 
     leerOperacion(
-document.getElementById("operacion").innerText
-);
+    document.getElementById("operacion").innerText
+    );
 }
 
 function verificar(){
@@ -370,6 +401,8 @@ function moverNave(){
     posicion + "%";
 
     if(aciertos>=10){
+
+        guardarPuntaje(100,"Espacial");
 
         lanzarConfeti();
 

@@ -307,6 +307,37 @@ let casasApagadas=0;
 let puedeResponder=false;
 let casas=[];
 
+let puntajeTotal =
+Number(localStorage.getItem("puntajeTotal")) || 0;
+
+let juegosCompletados =
+JSON.parse(localStorage.getItem("juegosCompletados")) || [];
+
+function guardarPuntaje(puntos,nombreJuego){
+
+    puntajeTotal += puntos;
+
+    localStorage.setItem(
+        "puntajeTotal",
+        puntajeTotal
+    );
+
+    if(!juegosCompletados.includes(nombreJuego)){
+
+        juegosCompletados.push(nombreJuego);
+
+        localStorage.setItem(
+            "juegosCompletados",
+            JSON.stringify(juegosCompletados)
+        );
+    }
+
+    if(juegosCompletados.length >= 6){
+
+        location.href="final_juega.html";
+    }
+}
+
 function crearCiudad(){
 
     let grid=
@@ -718,6 +749,8 @@ function lanzarConfeti(){
 }
 
 function ganar(){
+
+    guardarPuntaje(60,"Bomberos");
 
     lanzarConfeti();
     estrellas();
